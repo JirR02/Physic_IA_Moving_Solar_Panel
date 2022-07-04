@@ -27,30 +27,34 @@ try:
         kit.stepper1.onestep(direction=stepper.BACKWARD)
         LightValueNewBackward = rc_time(pinLDR)
         kit.stepper1.onestep()
-            while LightValueInitial < LightValueNewForward:
-                LightValueInitial = LightValueNewForward
-                kit.stepper1.onestep()
-                LightValueNewForward = rc_time(pinLDR)
-                if LightValueInitial > LightValueNewForward:
-                    kit.stepper1.onestep(direction=stepper.BACKWARD)
-            while LightValueInitial < LightValueNewBackward:
-                LightValueInitial = LightValueNewBackward
-                kit.stepper1.onestep(direction=stepper.BACKWARD)
-                LightValueNewBackward = rc_time(pinLDR)
-                if LightValueInitial > LightValueNewBackward:
+            if LightValueInitial > LightValueNewForward:
+                while LightValueInitial > LightValueNewForward:
+                    LightValueInitial = LightValueNewForward
                     kit.stepper1.onestep()
+                    LightValueNewForward = rc_time(pinLDR)
+                    if LightValueInitial < LightValueNewForward:
+                        kit.stepper1.onestep(direction=stepper.BACKWARD)
+            if LightValueInitial > LightValueNewBackward:    
+                while LightValueInitial > LightValueNewBackward:
+                    LightValueInitial = LightValueNewBackward
+                    kit.stepper1.onestep(direction=stepper.BACKWARD)
+                    LightValueNewBackward = rc_time(pinLDR)
+                    if LightValueInitial < LightValueNewBackward:
+                        kit.stepper1.onestep()
         kit.stepper2.onestep()
         LightValueNewForward = rc_time(pinLDR)
         kit.stepper2.onestep(direction=stepper.BACKWARD)
         kit.stepper2.onestep(direction=stepper.BACKWARD)
         LightValueNewBackward = rc_time(pinLDR)
         kit.stepper2.onestep()
-            while LightValueInitial < LightValueNewForward:
+        if LightValueInitial > LightValueNewForward:
+            while LightValueInitial > LightValueNewForward:
                 LightValueInitial = LightValueNewForward
                 kit.stepper2.onestep()
                 LightValueNewForward = rc_time(pinLDR)
                 if LightValueInitial > LightValueNewForward:
                     kit.stepper2.onestep(direction=stepper.BACKWARD)
+        if LightValueInitial > LightValueNewBackward:    
             while LightValueInitial < LightValueNewBackward:
                 LightValueInitial = LightValueNewBackward
                 kit.stepper2.onestep(direction=stepper.BACKWARD)
