@@ -3,9 +3,7 @@ from adafruit_motor import stepper
 import RPi.GPIO as GPIO
 import time
 
-GPIO.setmode(GPIO.BOARD)
-
-pinLDR = 7
+pinLDR = 4
 
 def rc_time (pinLDR):
     count = 0
@@ -64,7 +62,7 @@ try:
                     kit.stepper2.onestep()
         with open('Lightvalues_Moving.txt', 'a') as f:
             f.write(str(rc_time(pinLDR)))
-            print(rc_time*(pinLDR))
+            print(str(rc_time*(pinLDR)))
             time.sleep(300)
 finally:
     GPIO.cleanup()
