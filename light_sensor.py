@@ -18,7 +18,8 @@ def rc_time (pinLDR):
 try:
     while True:
         with open('Lightvalues_Static.txt', 'a') as f:
-            f.write(rc_time(pinLDR))
+            f.write(str(rc_time(pinLDR)))
+            print(rc_time(pinLDR))
             time.sleep(300)
 except KeyboardInterrupt:
     pass
