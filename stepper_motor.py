@@ -1,7 +1,9 @@
-from adafruit_motorkit import MotorKit as kit
+from adafruit_motorkit import MotorKit
 from adafruit_motor import stepper
 import RPi.GPIO as GPIO
 import time
+
+kit = MotorKit()
 
 pinLDR = 4
 
@@ -19,12 +21,42 @@ LightValueInitial = rc_time(pinLDR)
 
 try:
     while True:
+        for k in range(32):
+            kit.stepper1.onestep()
         LightValueInitial = rc_time(pinLDR)
         kit.stepper1.onestep()
         LightValueNewForward = rc_time(pinLDR)
-        kit.stepper1.onestep(direction=stepper.BACKWARD)
-        kit.stepper1.onestep(direction=stepper.BACKWARD)
+        time.sleep(0.5)
+        for k in range(64):
+            kit.stepper1.onestep(direction=stepper.BACKWARD)
         LightValueNewBackward = rc_time(pinLDR)
+        time.sleep(0.5)
+        for k in range(32):    
+            kit.stepper1.onestep()
+        if LightValueInitial > LightValueNewForward:
+            while LightValueInitial > LightValueNewForward:
+                LightValueInitial = LightValueNewForward
+                time.sleep(0.5)
+                for k in range(32):
+                    kit.stepper1.onestep()
+                LightValueNewForward = rc_time(pinLDR)
+                time.sleep(0.5)
+                if LightValueInitial < LightValueNewForward:
+                    for k in range(32):
+                        kit.stepper1.onestep(direction=stepper.BACKWARD)
+        if LightValueInitial > LightValueNewBackward:    
+            while LightValueInitial > LightValueNewBackward:
+                LightValueInitial = LightValueNewBackward
+                time.sleep(0.5)
+                for k in range(32):
+                    kit.stepper1.onestep(direction=stepper.BACKWARD)
+                LightValueNewBackward = rc_time(pinLDR)
+                time.sleep(0.5)
+                if LightValueInitial < LightValueNewBackward:
+                    for k in range(32):        
+                        kit.stepper1.onestep()
+        for k in range(32):
+            kit.stepper2.onestep()
         kit.stepper1.onestep()
         if LightValueInitial > LightValueNewForward:
             while LightValueInitial > LightValueNewForward:
@@ -42,27 +74,38 @@ try:
                     kit.stepper1.onestep()
         kit.stepper2.onestep()
         LightValueNewForward = rc_time(pinLDR)
-        kit.stepper2.onestep(direction=stepper.BACKWARD)
-        kit.stepper2.onestep(direction=stepper.BACKWARD)
+        time.sleep(0.5)
+        for k in range(64):    
+            kit.stepper2.onestep(direction=stepper.BACKWARD)
         LightValueNewBackward = rc_time(pinLDR)
-        kit.stepper2.onestep()
+        time.sleep(0.5)
+        for k in range(32):
+            kit.stepper2.onestep()
         if LightValueInitial > LightValueNewForward:
             while LightValueInitial > LightValueNewForward:
                 LightValueInitial = LightValueNewForward
-                kit.stepper2.onestep()
+                time.sleep(0.5)
+                for k in range(32):
+                    kit.stepper2.onestep()
                 LightValueNewForward = rc_time(pinLDR)
+                time.sleep(0.5)
                 if LightValueInitial > LightValueNewForward:
-                    kit.stepper2.onestep(direction=stepper.BACKWARD)
+                    for k in range(32):
+                        kit.stepper2.onestep(direction=stepper.BACKWARD)
         if LightValueInitial > LightValueNewBackward:    
             while LightValueInitial < LightValueNewBackward:
                 LightValueInitial = LightValueNewBackward
-                kit.stepper2.onestep(direction=stepper.BACKWARD)
+                time.sleep(0.5)
+                for k in range(32):    
+                    kit.stepper2.onestep(direction=stepper.BACKWARD)
                 LightValueNewBackward = rc_time(pinLDR)
+                time.sleep(0.5)
                 if LightValueInitial > LightValueNewBackward:
-                    kit.stepper2.onestep()
+                    for k in range(32):
+                        kit.stepper2.onestep()
         with open('Lightvalues_Moving.txt', 'a') as f:
             f.write(str(rc_time(pinLDR)))
-            print(str(rc_time*(pinLDR)))
-            time.sleep(300)
+        print(rc_time(pinLDR))
+        time.sleep(300)
 finally:
     GPIO.cleanup()
